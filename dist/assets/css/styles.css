@@ -14,11 +14,9 @@ nav ul>li {
     padding: 10px;
 }
 
-.active {
-    color: green;
-    background-color: yellow;
-}
-
 table tbody tr:nth-child(2n) td{
     background-color: #ddd;
+}
+#login{
+    float:right;
 }
