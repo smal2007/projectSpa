@@ -8,11 +8,12 @@
   },
   "author": "",
   "license": "ISC",
-   "devDependencies": {
+  "devDependencies": {
     "bower": "^1.7.9",
     "browser-sync": "^2.16.0",
     "del": "^2.2.2",
     "gulp": "^3.9.1",
+    "gulp-autoprefixer": "^3.1.1",
     "gulp-clean": "^0.3.2",
     "gulp-rigger": "^0.5.8",
     "main-bower-files": "^2.13.1"

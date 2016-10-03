@@ -4,23 +4,57 @@
 <head>
     <title>spa - магазин</title>
     <meta charset="utf-8">
+
     <link rel="stylesheet" href="assets/css/styles.css" type="text/css" />
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 </head>
 
-<body>
-    <nav>
-        <ul id="pages">
-            <li><a href="#/" data-src="assets/pages/new.html" data-js="assets/js/new.js">О приложении</a></li>
-            <li><a href="#/registration" data-src="assets/pages/registration.html" data-js="assets/js/registration.js">Регистрация</a></li>
-            <li><span id="login"></span></li>
+<body> 
+    <nav id="mainNav" class="navbar navbar-inverse navbar-fixed-top navbar-custom">
+        <div class="container">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span> Menu <i class="fa fa-bars"></i>
+                </button>
+                <a class="navbar-brand" href="#page-top">Shop</a>
+            </div>
 
-        </ul>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul id="pages" class="nav navbar-nav navbar-right">
+                    <li class="page-scroll">
+                        <a href="#/" data-src="assets/pages/new.html" data-js="assets/js/new.js">О приложении</a>
+                    </li>
+                    <li class="page-scroll">
+                        <a href="#/registration" data-src="assets/pages/registration.html" data-js="assets/js/registration.js">Регистрация</a>
+                    </li>
+                    <li class="page-scroll">
+
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container-fluid -->
     </nav>
-    <section id="app" data-pages="#pages"></section>
+    
+     <div class="toggle-wrap">
+    <h3>3.) Customize</h3>
+  
+  </div>
+
+    <script src="https://use.fontawesome.com/a1cb3b8bdb.js"></script>
+    <section class='container' id="app" data-pages="#pages"></section>
     <script type="text/javascript" src="assets/js/jquery.js"></script>
     <script type="text/javascript" src="assets/js/jquery-ui.js"></script>
+    <script src="https://api.backendless.com/sdk/js/latest/backendless.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     <script type="text/javascript" src="assets/js/app.js"></script>
 </body>
-
+<!--categoryId.objectId='096FE516-7CEE-4958-FF1C-0042E1FEF500'-->
+<!--vendorId.objectId='B94C146D-0F2E-DF9F-FF49-97A7045F9C00' -->
+<!--tag like '%a%'-->
+<!--tag like 'Noki%'-->
 </html>

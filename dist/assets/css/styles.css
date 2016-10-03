@@ -1,22 +1,83 @@
-nav {
-    width: 100%;
-    background-color: #DDD;
+
+ #app{
+     margin-top: 60px;
+ }
+
+input[type = button]{
+    margin-top: 5px;
 }
 
-nav ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
+#reg_complete{
+    text-align: center;
 }
 
-nav ul>li {
-    padding: 10px;
+.box{
+    position: relative;
+    width: 600px;
+    height: 300px;
+    border: solid;
+    margin: 0 auto;
 }
 
-table tbody tr:nth-child(2n) td{
-    background-color: #ddd;
+.icon{
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    font-size: 30px;
+    cursor: pointer;
 }
-#login{
-    float:right;
+
+.sign{
+   
+margin-top: 14px;
+    margin-left: 65px;
+}
+
+div.form{
+    margin: 75px;
+    display: none;
+}
+
+.choise{
+    margin: 100px;
+    width: 400px;
+    border: solid;
+    height: 100px;
+}
+
+
+/*main page*/
+#app{
+    border:solid;
+}
+#logo{
+    border: solid;
+   /* width: 300px;*/
+    height: 100px;
+    text-align: 50px;
+    font-size: 50px;
+    text-align: center;
+}
+
+.foto{
+    width: auto;
+    max-height: 100px;
+    
+}
+
+.tel_thumbnail{
+    cursor: pointer;
+    min-height: 250px;
+}
+
+.modal-title{
+    text-align: center;
+}
+
+.modal-body{
+    text-align: center;
+}
+
+.modal_foto{
+        max-height: 400px;
 }
