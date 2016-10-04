@@ -2,9 +2,7 @@ app.currentModule = (function($) {
     var objItems = {};
     var currentCategoryId = "";
 
-    $(document).ready(function() {
-        findTag(objItems);
-        findVendors(objItems);
+    $(function() {
         $("#slider-range").slider({
             range: true,
             min: 0,
@@ -19,14 +17,18 @@ app.currentModule = (function($) {
                 findTag(objItems);
             }
         });
-        $("#amount").val("$" + obj.find("#slider-range").slider("values", 0) +
-            " - $" + $.find("#slider-range").slider("values", 1));
+        $("#amount").val("$" + $("#slider-range").slider("values", 0) +
+            " - $" + $("#slider-range").slider("values", 1));
+    });
+
+    $(document).ready(function() {
+        findTag(objItems);
+        findVendors(objItems);
+
 
     });
 
-
     function handleResponseVendors(vendor) {
-
         $('.vendors li').remove();
         var newArr = [];
         var uniqueArray = [];
@@ -231,6 +233,7 @@ app.currentModule = (function($) {
                     findTag(objItems);
                 }
             });
+
             obj.find("#amount").val("$" + obj.find("#slider-range").slider("values", 0) +
                 " - $" + obj.find("#slider-range").slider("values", 1));
 
@@ -238,8 +241,11 @@ app.currentModule = (function($) {
             findCategory();
 
             obj.find('#test-btn').on("click", function() {
-                findTag(objItems);
-                findCategory();
+                localStorage.setItem('myKey', 'значение');
+                var localValue = localStorage.getItem('myKey');
+                console.log(localValue); //"myValue"
+                /*           findTag(objItems);
+                           findCategory();*/
             });
 
             callback();
