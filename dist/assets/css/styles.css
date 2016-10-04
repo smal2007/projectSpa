@@ -1,25 +1,25 @@
+#app {
+    margin-top: 60px;
+}
 
- #app{
-     margin-top: 60px;
- }
-
-input[type = button]{
+input[type=button] {
     margin-top: 5px;
 }
 
-#reg_complete{
+#reg_complete {
     text-align: center;
 }
 
-.box{
+
+/*.box {
     position: relative;
     width: 600px;
     height: 300px;
     border: solid;
     margin: 0 auto;
-}
+}*/
 
-.icon{
+.icon {
     position: absolute;
     top: 5px;
     left: 5px;
@@ -27,57 +27,91 @@ input[type = button]{
     cursor: pointer;
 }
 
-.sign{
-   
-margin-top: 14px;
-    margin-left: 65px;
+.sign {
+    margin-top: 14px;
+    margin-left: 15px;
 }
 
-div.form{
+div.form {
     margin: 75px;
     display: none;
 }
 
-.choise{
-    margin: 100px;
+.choise {
+    /* margin: 100px;
     width: 400px;
     border: solid;
-    height: 100px;
+    height: 100px;*/
+    float: right;
 }
 
 
 /*main page*/
-#app{
-    border:solid;
-}
-#logo{
-    border: solid;
-   /* width: 300px;*/
+
+#app {}
+
+#logo {
+    /* width: 300px;*/
     height: 100px;
     text-align: 50px;
     font-size: 50px;
     text-align: center;
 }
 
-.foto{
+.foto {
     width: auto;
     max-height: 100px;
-    
 }
 
-.tel_thumbnail{
+.tel_thumbnail {
     cursor: pointer;
     min-height: 250px;
 }
 
-.modal-title{
+.modal-title {
     text-align: center;
 }
 
-.modal-body{
+.modal-body {
     text-align: center;
 }
 
-.modal_foto{
-        max-height: 400px;
+.modal_foto {
+    max-height: 400px;
+}
+
+#Registration,
+#Login {
+    margin-top: 110px;
+    border: 1px solid black;
+}
+
+#notification {
+    position: fixed;
+    top: 0px;
+    left: 20%;
+    width: 60%;
+    z-index: 9999;
+    border-radius: 0px
+}
+
+#current-user {
+    color: black;
+}
+
+.count-input {
+    border: none;
+}
+
+table {
+    width: 100%;
+}
+
+table thead tr td {
+
+}
+
+table div {
+    width: 100px;
+    word-wrap: break-word;
 }

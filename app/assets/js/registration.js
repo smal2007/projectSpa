@@ -1,16 +1,106 @@
 app.currentModule = (function($) {
-    Backendless.initApp("B08630AE-F0DB-F308-FF82-01D4899A5E00", "D666283F-99D3-A4EF-FF8F-DD9DDA74E100", "v1");
+    var curUser = "";
 
-    // get objectId of the logged-in user:
-    var userObjectId = Backendless.LocalCache.get("current-user-id")
+    $(document).ready(function() {
+        $(".nav-tabs a").click(function() {
+            $(this).tab('show');
+        });
+        //viewItems(findCart());
+        $("#refresh-table").on("click", function() {
+            // refcresh();
+            console.log("Refreshed");
+            viewItems(findCart());
+        });
+    });
 
-    // get user-token of the logged-in user:
-    var userToken = Backendless.LocalCache.get("user-token")
-    console.log(userToken)
+    $(function() {
+        $('#myTab a:last').tab('show');
+    });
 
-    // get current user object:
-    var userObject = Backendless.UserService.getCurrentUser();
-    console.log(userObject);
+
+    function findItems(id) {
+        var arrayOfItems = {};
+        var dataQuery = {
+            options: {
+                // pageSize: obj.pageSize
+            },
+            condition: "objectId = '" + id + "'"
+        };
+        //  var myContact = Backendless.Persistence.of('items').find(dataQuery, new Backendless.Async(userLoggedIn(myContact), gotError));
+        var myContact = Backendless.Persistence.of('items').find(dataQuery);
+        $.each(myContact.data, function(i) {
+            arrayOfItems[arrayOfItems.length] = myContact.data[i];
+        });
+        return myContact;
+    }
+
+    function findCart() {
+        var arrayOfItems = [];
+        var dataQuery = {
+            options: {},
+            // condition: "itemId = cart.itemId"
+        };
+
+        var myContact = Backendless.Persistence.of('cart').find(dataQuery);
+        $.each(myContact.data, function(i) {
+            arrayOfItems[arrayOfItems.length] = myContact.data[i];
+        });
+        console.log()
+        return arrayOfItems;
+    };
+
+
+    function viewItems(data) {
+        $(".table thead td").remove();
+        var sum = 0;
+        $.each(data, function(i) {
+            var items = findItems(data[i].itemId);
+            sum += items.data[0].price * data[i].count;
+            $(".table thead").append("<tr><td>" + data[i].objectId + "</td><td>" + items.data[0].title + "</td><td>" + items.data[0].price + "</td><td><input class='count-input' type='text' value=" + data[i].count + "></td><td class='next-input total-count'>" + items.data[0].price * data[i].count + "</td></tr>");
+        });
+        $("#total-cart-summa").text(sum);
+
+        $(".count-input").keyup(function() {
+            var next = $(this).closest('td').next('td');
+            var prev = $(this).closest('td').prev('td');
+            var cur = $(this);
+            next.text(parseInt(prev.text()) * cur.val());
+            console.log();
+            var count = 0;
+
+            $(".total-count").each(function() {
+                count += parseInt($(this).text());
+            });
+
+            $("#total-cart-summa").text(count);
+
+        });
+
+        $('.count-input').on('keydown', function(event) {
+            if (event.keyCode == 13) {
+                saveInTable($(this).parent().parent().children(':first-child').text(), $(this).val())
+            }
+        });
+    }
+
+    function saveInTable(objectId, count) {
+        var dataStore = Backendless.Persistence.of('cart');
+        var dataQuery = {
+            condition: "objectId='" + objectId + "'"
+        };
+        var commentObject = new Cart({
+            count: count,
+            objectId: objectId
+        });
+        dataStore.save(commentObject);
+
+        function Cart(args) {
+            args = args || {};
+            this.count = args.count || "";
+            this.objectId = args.objectId || "";
+        }
+    }
+
     return {
         init: function(obj, callback) {
             console.log("Инициализируем модуль для главной страницы");
@@ -18,110 +108,6 @@ app.currentModule = (function($) {
             callback = callback || function() {
                 return false;
             }
-
-            var butId;
-            var objData;
-            var reg_name = /.{5,10}/ig;
-            var reg_password = /\w{5,10}/ig;
-
-
-
-            $(obj).find('.sign').on("click", function showForm() {
-                console.log('ok');
-                $('.form').toggle();
-                $('.choise').toggle();
-
-                if (this.tagName != 'SPAN') {
-                    $('div.form input[type = button]').val(this.innerHTML);
-                    console.log('equal span')
-                    butId = this.id;
-                    $('.box').append('<span class="icon">');
-                    $('span.icon').html('<i class="fa fa-reply" aria-hidden="true"></i>')
-                    $('span.icon').on('click', showForm)
-                }
-                else if (this.tagName == 'SPAN') {
-                    $(this).css('display', 'none')
-                }
-            })
-
-            $(obj).find('input[type = button]').on('click', function makeObjData() {
-                console.log($('input[name = first_name]').val());
-                if ($('input[name = first_name]').val().match(reg_name) &&
-                    $('input[name = password]').val().match(reg_password)) {
-                    objData = {};
-                    objData.name = $('input[name = first_name]').val();
-                    objData.password = $('input[name = password]').val();
-                    objData = JSON.stringify(objData);
-                    if (butId == 'sign_in') {
-                        sign_in()
-                    }
-                    else if (butId == 'sign_up') {
-                        sign_up()
-                    }
-                    else console.log(butId)
-                }
-                else {
-                    alert('try again')
-                }
-
-
-            })
-
-            function sign_in() {
-                // $.ajax({
-                //     url: 'https://api.backendless.com/v1/data/registredUsers',
-                //     headers: {
-                //         'application-id': "B08630AE-F0DB-F308-FF82-01D4899A5E00",
-                //         'secret-key': "D666283F-99D3-A4EF-FF8F-DD9DDA74E100"
-                //     },
-                //     success: function(data) {
-                //         console.log(data.data)
-                //         var dataFromServer = data.data;
-
-                //         for (var i = 0; i < dataFromServer.length; i++) {
-                //             if (dataFromServer[i].name == $('input[name = first_name]').val() && dataFromServer[i].password == $('input[name = password]').val()) {
-                //                 $('.box').html('')
-                //             }
-
-                //         }
-                //     }
-                // })
-                Backendless.UserService.login($('input[name = first_name]').val(), $('input[name = password]').val(), true);
-                
-
-            }
-
-            function sign_up() {
-                // $.ajax({
-                //     url: 'https://api.backendless.com/v1/data/registredUsers',
-                //     type: 'POST',
-                //     data: objData,
-                //     contentType: 'application/json',
-                //     headers: {
-                //         'application-id': "B08630AE-F0DB-F308-FF82-01D4899A5E00",
-                //         'secret-key': "D666283F-99D3-A4EF-FF8F-DD9DDA74E100"
-                //     },
-                //     success: function(data) {
-                //         $('.box').append('<div id="reg_complete" class="alert alert-success" role="alert"></div>');
-                //         $('#reg_complete').html('Registration complete!!! Sign in please!!!')
-                //         butId = 'sign_in';
-                //         $('div.form input[type = button]').val('sign in');
-
-                //         objData.name = $('input[name = first_name]').val('');
-                //         objData.password = $('input[name = password]').val('');
-
-                //         console.log(data)
-                //     }
-                // })
-                var user = new Backendless.User();
-                user.email = $('input[name = first_name]').val();
-                user.password = $('input[name = password]').val();
-                console.log(user, Backendless);
-                Backendless.UserService.register(user);
-            }
-
-
-            console.log('load')
 
             callback();
 
