@@ -3,7 +3,25 @@ app.currentModule = (function($) {
     var currentCategoryId = "";
 
     $(document).ready(function() {
-        findVendors();
+        findTag(objItems);
+        findVendors(objItems);
+        $("#slider-range").slider({
+            range: true,
+            min: 0,
+            max: 2000,
+            values: [0, 2000],
+            slide: function(event, ui) {
+                $("#amount").val("$" + ui.values[0] + " - $" + ui.values[1]);
+            },
+            change: function(e, ui) {
+                objItems.startPrice = ui.values[0];
+                objItems.endPrice = ui.values[1];
+                findTag(objItems);
+            }
+        });
+        $("#amount").val("$" + obj.find("#slider-range").slider("values", 0) +
+            " - $" + $.find("#slider-range").slider("values", 1));
+
     });
 
 
@@ -188,7 +206,7 @@ app.currentModule = (function($) {
         var dataQuery = {};
         itemsStorage.find(dataQuery, callback);
     }
-    
+
     return {
         init: function(obj, callback) {
             var categoryId;
@@ -217,13 +235,13 @@ app.currentModule = (function($) {
                 " - $" + obj.find("#slider-range").slider("values", 1));
 
             findTag(objItems);
-             findCategory();
+            findCategory();
 
             obj.find('#test-btn').on("click", function() {
                 findTag(objItems);
                 findCategory();
             });
-        
+
             callback();
         }
     }

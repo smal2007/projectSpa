@@ -95,9 +95,6 @@ app.currentModule = (function($) {
 
     function saveInTable(objectId, count) {
         var dataStore = Backendless.Persistence.of('cart');
-        var dataQuery = {
-            condition: "objectId='" + objectId + "'"
-        };
         var commentObject = new Cart({
             count: count,
             objectId: objectId
