@@ -47,7 +47,9 @@ div.form {
 
 
 /*main page*/
-
+.vendors{
+    margin-top:20px;
+}
 #app {}
 
 #logo {

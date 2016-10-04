@@ -12,6 +12,7 @@ var app = (function($, cont) {
 
     Backendless.initApp(APPLICATION_ID, SECRET_KEY, VERSION);
 
+
     var curUser = "";
 
     $(document).ready(function() {

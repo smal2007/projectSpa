@@ -1,13 +1,23 @@
 app.currentModule = (function($) {
     var curUser = "";
 
+
     $(document).ready(function() {
         $(".nav-tabs a").click(function() {
             $(this).tab('show');
         });
-        //viewItems(findCart());
+
+    });
+
+    $(window).on('hashchange', function() {
         $("#refresh-table").on("click", function() {
-            // refcresh();
+            console.log("Refreshed");
+            viewItems(findCart());
+        });
+    });
+
+    $(".nav-tabs").change(function() {
+        $("#refresh-table").on("click", function() {
             console.log("Refreshed");
             viewItems(findCart());
         });
@@ -69,7 +79,7 @@ app.currentModule = (function($) {
             var count = 0;
 
             $(".total-count").each(function() {
-                count += parseInt($(this).text());
+                count += parseInt(this).text();
             });
 
             $("#total-cart-summa").text(count);
@@ -108,6 +118,11 @@ app.currentModule = (function($) {
             callback = callback || function() {
                 return false;
             }
+
+            obj.find("#refresh-table").on('click', function() {
+                console.log("Refreshed");
+                viewItems(findCart());
+            });
 
             callback();
 
