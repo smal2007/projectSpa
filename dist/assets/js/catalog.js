@@ -118,6 +118,7 @@ app.currentModule = (function($) {
         for (var i = 0; i < uniqueArray.length; i++) {
             var li = $('<li class="vendor"><label> <input name="vendors" type="checkbox"> ' + uniqueArray[i] + ' </label> </li>');
             $('.vendors').append(li);
+             $(li).find('input[type="checkbox"]').checkboxradio({icon:false})
         }
 
         $('.vendors li label input[type="checkbox"]').change(function() {
@@ -161,12 +162,12 @@ app.currentModule = (function($) {
         var tags = tagsMobile.slice((i) * 8, (i + 1) * 8);
         $('.box_for_tel').html('');
         for (var i = 0; i < tags.length; i++) {
-            $('.box_for_tel').append('<div data-category_id="' + tags[i].objectId + '" class="tel col-sm-4 col-md-3" data-count="' + i + '">');
+            $('.box_for_tel').append('<div data-category_id="' + tags[i].objectId + '" class="tel col-xs-6 col-sm-6 col-md-4 col-lg-3" data-count="' + i + '">');
             var tel = $('.tel')[i];
             $(tel).append('<div class=" tel_thumbnail thumbnail" data-toggle="modal" data-target="#myModal">');
             var tel_thumbnail = $('.tel_thumbnail')[i];
             $(tel_thumbnail).append("<img class='foto' src='" + tags[i].image + "'>");
-            $(tel_thumbnail).append('<h3>' + tags[i].title + '</h3>');
+            $(tel_thumbnail).append('<h4>' + tags[i].title + '</h4>');
             $(tel_thumbnail).append('<h3>' + tags[i].price + ' $</h3>');
             $(tel_thumbnail).append('<input data-category_id="' + tags[i].objectId + '" class="addtocart btn btn-info" type="button" value="Добавить в корзину">');
 
@@ -229,14 +230,14 @@ app.currentModule = (function($) {
         var tags = tag.data;
         $('.box_for_tel').html('');
         for (var i = 0; i < 8; i++) {
-            $('.box_for_tel').append('<div data-category_id="' + tags[i].objectId + '" class="tel col-sm-4 col-md-3" data-count="' + i + '">');
+            $('.box_for_tel').append('<div data-category_id="' + tags[i].objectId + '" class="tel col-xs-6 col-sm-6 col-md-4 col-lg-3" data-count="' + i + '">');
             var tel = $('.tel')[i];
             $(tel).append('<div class=" tel_thumbnail thumbnail" data-toggle="modal" data-target="#myModal">');
             var tel_thumbnail = $('.tel_thumbnail')[i];
-            $(tel_thumbnail).append("<img class='foto' src='" + tags[i].image + "'>");
-            $(tel_thumbnail).append('<h3>' + tags[i].title + '</h3>');
+            $(tel_thumbnail).append("<img class='foto pulse' src='" + tags[i].image + "'>");
+            $(tel_thumbnail).append('<h4>' + tags[i].title + '</h4>');
             $(tel_thumbnail).append('<h3>' + tags[i].price + ' $</h3>');
-
+ /*$(tel_thumbnail).append('<button class="basket_btn btn btn-primary"> в корзину </button>');*/
             $(tel_thumbnail).append('<input data-category_id="' + tags[i].objectId + '" class="addtocart btn btn-info" type="button" value="Добавить в корзину">');
 
 
@@ -321,9 +322,9 @@ app.currentModule = (function($) {
     function handleResponseCategory(cat) {
         var category = cat.data;
         $('#menu-category li').remove();
-        $('#menu-category').append('<li><a href="#/">Все категории</a></li>');
+        $('#menu-category').append('<li class="btn btn-primary  btn-block btn-lg"><p>Все категории <i class="fa fa-mobile" aria-hidden="true"></i></p></li>');
         $.each(category, function(i) {
-            $('#menu-category').append('<li data-category_id ="' + category[i].objectId + '"><a href="#/">' + category[i].name + '</a></li>');
+            $('#menu-category').append('<li class="btn btn-primary  btn-block btn-lg" data-category_id ="' + category[i].objectId + '"><p>' + category[i].name + '</p></li>');
         });
 
         $("#menu-category li").on("click", function() {

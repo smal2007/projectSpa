@@ -17,6 +17,7 @@ var app = (function($, cont) {
 
 
     $(document).ready(function() {
+          Backendless.UserService.logout(new Backendless.Async(app.userLoggedout, app.gotError));
         app.checkUser();
         $("#modal-button-registration").on("click", function() {
             var user = new Backendless.User();

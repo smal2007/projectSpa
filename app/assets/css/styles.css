@@ -1,3 +1,17 @@
+@media all  and (max-width: 991px) {
+    .logo_img{
+       
+         left:50% !important;
+    }
+}
+
+@media all  and (max-width: 615px) {
+    .logo_img{
+       
+         left:20% !important;
+    }
+}
+
 #app {
     margin-top: 60px;
 }
@@ -46,13 +60,40 @@ div.form {
 }
 
 
-/*main page*/
+                               /*vendors*/
 .vendors{
     margin-top:20px;
+    padding-left: 0;
 }
+
+li.vendor {
+    display: inline-block
+}
+
+
 #app {}
 
+.ui-widget-header {
+  
+    background: #2196F3!important
+}
+                              /*.category*/
+
+
+#menu-category{
+    padding:0;
+    margin-top: 30px;
+}
+
+#menu-category p{
+    margin: 0
+}
+
+
+                                 /*logo*/
 #logo {
+    position: relative;
+   /* border: solid;*/
     /* width: 300px;*/
     height: 100px;
     text-align: 50px;
@@ -60,25 +101,79 @@ div.form {
     text-align: center;
 }
 
+.logo_img{
+    position: absolute;
+    vertical-align: middle;
+    width: 100%;
+    left: -5px;
+    top: -51px;
+    max-width: 300px
+}
+
+                              /*phones*/
+
 .foto {
     width: auto;
     max-height: 100px;
 }
 
 .tel_thumbnail {
+    text-align: center;
     cursor: pointer;
     min-height: 250px;
+    position: relative
+}
+
+
+
+@keyframes pulsing {
+  from {
+    -webkit-transform: scale3d(1, 1, 1);
+    transform: scale3d(1, 1, 1);
+  }
+
+  50% {
+    -webkit-transform: scale3d(1.1, 1.1, 1.1);
+    transform: scale3d(1.1, 1.1, 1.1);
+  }
+
+  to {
+    -webkit-transform: scale3d(1, 1, 1);
+    transform: scale3d(1, 1, 1);
+  }
+}
+
+.pulse:hover{
+animation:pulsing 1s infinite
+}
+
+
+
+
+
+.tel_thumbnail img{
+    margin-top: 10px;
+}
+
+.tel_thumbnail h3 {
+    display: block;
+    position: absolute;
+    left: 5px;
+    bottom: 0px;
+}
+
+.basket_btn {
+    display: block;
+    position: absolute;
+    right: 5px;
+    bottom: 5px;
 }
 
 .modal-title {
     text-align: center;
 }
 
-.modal-body {
-    text-align: center;
-}
-
-.modal-body1 {
+.modal-body, .modal-body1 {
     text-align: center;
 }
 
@@ -122,7 +217,57 @@ table div {
     word-wrap: break-word;
 }
 
-ul.vendors{
-    margin-bottom: 10px;
+                         /*contacts*/
+                         
+                         
+.pagination{
+    margin-left: 45% !important
 }
 
+
+.contact, contact td p{
+  
+   color: white;
+    height: 420px;
+    margin: 15px;
+    padding: 5px;
+    text-align: center;
+    overflow: hidden;
+    border-radius: 5px;
+    
+}
+
+.adress h3, .adress p{
+    color: white !important;
+    text-align:center;
+    padding-bottom:25px;
+    text-shadow: 2px 4px 3px rgba(0,0,0,0.3);
+    color:#343435;
+}
+
+.message{
+     background-color: #337ab7;
+}
+
+.adress p{
+    color: white;
+    font-size: 20px;
+    text-align: left;
+    padding-bottom: 29px;
+    font-weight: bold;
+    text-transform: uppercase;
+
+} 
+
+.contact td:nth-child(odd) p{
+  text-align:   left;  
+}
+
+.contact td:nth-child(even) p{
+   text-align:  right;
+}
+
+#menu1 .btn, #menu2 .btn{
+    margin-bottom: 10px;
+    margin-top: 10px;
+}

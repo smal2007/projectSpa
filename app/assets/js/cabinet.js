@@ -65,8 +65,10 @@ app.currentModule = (function($) {
         $(".table thead td").remove();
         var sum = 0;
         $.each(data, function(i) {
+          
             var items = findItems(data[i].itemId);
-            sum += items.data[0].price * data[i].count;
+              console.log(items);
+           sum += items.data[0].price * data[i].count;
             $(".table thead").append("<tr><td>" + data[i].objectId + "</td><td>" + items.data[0].title + "</td><td>" + items.data[0].price + "</td><td><input class='count-input' type='text' value=" + data[i].count + "></td><td class='next-input total-count'>" + items.data[0].price * data[i].count + "</td></tr>");
         });
         $("#total-cart-summa").text(sum);
