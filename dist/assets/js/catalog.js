@@ -1,6 +1,26 @@
 app.currentModule = (function($) {
     var objItems = {};
     var currentCategoryId = "";
+    var tagsMobile = {};
+
+
+
+    $(function() {
+        var curUser = "";
+        console.log(curUser);
+        curUser = Backendless.UserService.getCurrentUser();
+        if (curUser != null) {
+            $('.addtocart').show();
+        }
+        else {
+            $('.addtocart').hide();
+        }
+    });
+
+    $(document).ready(function() {
+        // Handler for .ready() called.
+    });
+
 
     $(function() {
         $("#slider-range").slider({
@@ -22,11 +42,65 @@ app.currentModule = (function($) {
     });
 
     $(document).ready(function() {
-        findTag(objItems);
+        //  findTag(objItems);
         findVendors(objItems);
-
-
     });
+
+
+    function addToCart(objectId1) {
+        //   var callback = new Backendless.Async(handleResponseTag, handleFault);
+        var dataStore = Backendless.Persistence.of('cart');
+
+        //console.log(Backendless.UserService.getCurrentUser().objectId);
+        var cond = "itemId='" + objectId1 + "'";
+        console.log(cond);
+        var dataQuery = {
+            condition: cond,
+            //  condition: "ownerId='"+ Backendless.UserService.getCurrentUser().objectId +"'",
+        }
+        var myContact = dataStore.find(dataQuery);
+        console.log(myContact.data.length);
+
+        // console.log(myContact.data[0].objectId);
+        if (myContact.data.length > 0) {
+            console.log('a');
+            var count = myContact.data[0].count;
+            var commentObject1 = new Cart1({
+                count: count + 1,
+                itemId: objectId1,
+                objectId: myContact.data[0].objectId,
+
+                //    ownerId: Backendless.UserService.getCurrentUser().objectId,
+            });
+            dataStore.save(commentObject1);
+        }
+        else {
+            console.log('ss');
+            var commentObject2 = new Cart2({
+                count: 1,
+                itemId: objectId1,
+                // objectId: objectId1,
+                ownerId: Backendless.UserService.getCurrentUser().objectId
+            });
+            Backendless.Persistence.of('cart').save(commentObject2);
+            // dataStore.save(commentObject);
+        }
+
+        function Cart1(args) {
+            args = args || {};
+            this.count = args.count || "";
+            this.itemId = args.itemId || "";
+            this.objectId = args.objectId || "";
+            //    this.ownerId = args.ownerId || "";
+        }
+
+        function Cart2(args) {
+            args = args || {};
+            this.count = args.count || "";
+            this.itemId = args.itemId || "";
+            //    this.ownerId = args.ownerId || "";
+        }
+    }
 
     function handleResponseVendors(vendor) {
         $('.vendors li').remove();
@@ -83,32 +157,8 @@ app.currentModule = (function($) {
     }
 
 
-
-
-    function initPaginator(count) {
-        var $pag = $('.pagination');
-        $pag.find("li").remove();
-        $pag.append('<li class="disabled"><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>');
-        for (var i = 1; i <= count; i++) {
-            $pag.append('<li class="active"><a href="#">' + i + '<span class="sr-only">(current)</span></a></li>');
-            //   li.onclick = myfun(i);
-        }
-
-        /*myfun(var i)
-        {
-            
-            var mobieles = 
-        }*/
-        // $pag.append('<li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>');
-
-    }
-
-
-
-    function handleResponseTag(tag) {
-        var count = tag.totalObjects / 3;
-        initPaginator(count);
-        var tags = tag.data;
+    function myfun(i) {
+        var tags = tagsMobile.slice((i) * 8, (i + 1) * 8);
         $('.box_for_tel').html('');
         for (var i = 0; i < tags.length; i++) {
             $('.box_for_tel').append('<div data-category_id="' + tags[i].objectId + '" class="tel col-sm-4 col-md-3" data-count="' + i + '">');
@@ -118,30 +168,107 @@ app.currentModule = (function($) {
             $(tel_thumbnail).append("<img class='foto' src='" + tags[i].image + "'>");
             $(tel_thumbnail).append('<h3>' + tags[i].title + '</h3>');
             $(tel_thumbnail).append('<h3>' + tags[i].price + ' $</h3>');
+            $(tel_thumbnail).append('<input data-category_id="' + tags[i].objectId + '" class="addtocart btn btn-info" type="button" value="Добавить в корзину">');
 
             $(tel).on('click', function() {
                 var currentDataTel = tags[$(this).data('count')];
 
-                //   console.log($(this).attr("data-category_id"));
-
                 $('#myModalLabel').html(currentDataTel.title);
                 $('.modal-body1').html('<img class="modal_foto" src="' + currentDataTel.image + '">');
                 $('.modal-body1').append('<p>' + currentDataTel.fullDescription + '</p>');
-                
+
                 var curUser = Backendless.UserService.getCurrentUser();
                 if (curUser != null) {
                     localStorage.setItem(curUser.email, localStorage.getItem(curUser.email) + "," + $(this).attr("data-category_id"));
-                   // localStorage.setItem(curUser.email, $(this).attr("data-category_id"));
+                    // localStorage.setItem(curUser.email, $(this).attr("data-category_id"));
                 }
 
             });
 
-            /*  $(".tel_thumbnail").on("click", function() {
-                console.log($(this));
+            $(function() {
+                var curUser = "";
+                console.log(curUser);
+                curUser = Backendless.UserService.getCurrentUser();
+                if (curUser != null) {
+                    $('.addtocart').show();
+                }
+                else {
+                    $('.addtocart').hide();
+                }
             });
-*/
 
         }
+        $(".addtocart").on("click", function() {
+            console.log($(this).attr('data-category_id'));
+            addToCart($(this).attr('data-category_id'));
+            //   $("#myModal").fadeOut();
+        })
+    }
+
+    function initPaginator(count) {
+        var $pag = $('.pagination');
+        $pag.find("li").remove();
+        //  $pag.append('<li class="disabled"><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>');
+        for (var i = 0; i < count; i++) {
+            $pag.append('<li class="active"><a href="#/">' + (i + 1) + '<span class="sr-only">(current)</span></a></li>');
+            //   li.onclick = myfun(i);
+        }
+
+        $('.pagination li a').each(function(i) {
+            $(this).click(function() {
+                myfun(i);
+            });
+
+        });
+    }
+
+    function handleResponseTag(tag) {
+        tagsMobile = tag.data;
+        var count = tag.totalObjects / 8;
+        initPaginator(count);
+        var tags = tag.data;
+        $('.box_for_tel').html('');
+        for (var i = 0; i < 8; i++) {
+            $('.box_for_tel').append('<div data-category_id="' + tags[i].objectId + '" class="tel col-sm-4 col-md-3" data-count="' + i + '">');
+            var tel = $('.tel')[i];
+            $(tel).append('<div class=" tel_thumbnail thumbnail" data-toggle="modal" data-target="#myModal">');
+            var tel_thumbnail = $('.tel_thumbnail')[i];
+            $(tel_thumbnail).append("<img class='foto' src='" + tags[i].image + "'>");
+            $(tel_thumbnail).append('<h3>' + tags[i].title + '</h3>');
+            $(tel_thumbnail).append('<h3>' + tags[i].price + ' $</h3>');
+
+            $(tel_thumbnail).append('<input data-category_id="' + tags[i].objectId + '" class="addtocart btn btn-info" type="button" value="Добавить в корзину">');
+
+
+            $(tel).on('click', function() {
+                var currentDataTel = tags[$(this).data('count')];
+                $('#myModalLabel').html(currentDataTel.title);
+                $('.modal-body1').html('<img class="modal_foto" src="' + currentDataTel.image + '">');
+                $('.modal-body1').append('<p>' + currentDataTel.fullDescription + '</p>');
+
+
+                var curUser = Backendless.UserService.getCurrentUser();
+                if (curUser != null) {
+                    localStorage.setItem(curUser.email, localStorage.getItem(curUser.email) + "," + $(this).attr("data-category_id"));
+                    // localStorage.setItem(curUser.email, $(this).attr("data-category_id"));
+                }
+            });
+            $(function() {
+                var curUser = "";
+                console.log(curUser);
+                curUser = Backendless.UserService.getCurrentUser();
+                if (curUser != null) {
+                    $('.addtocart').show();
+                }
+                else {
+                    $('.addtocart').hide();
+                }
+            });
+        }
+        $(".addtocart").on("click", function() {
+            addToCart($(this).attr('data-category_id'));
+        })
+
     }
 
     function findTag(obj) {
@@ -176,7 +303,7 @@ app.currentModule = (function($) {
             },
             condition: condition1
         };
-        var myContact = itemsStorage.find(dataQuery, callback);
+        itemsStorage.find(dataQuery, callback);
     }
 
     function createStringOfSearch(arr, items) {
@@ -202,7 +329,8 @@ app.currentModule = (function($) {
         $("#menu-category li").on("click", function() {
             objItems.nameItems = "";
             var $th = $(this);
-            currentCategory = ($(this).text());
+            var currentCategory = ($(this).text());
+            //$('ul.vendors').text(currentCategory);
             currentCategoryId = $th.attr("data-category_id");
             objItems.titleItems = [currentCategoryId];
             findTag(objItems);
@@ -251,26 +379,14 @@ app.currentModule = (function($) {
             obj.find("#amount").val("$" + obj.find("#slider-range").slider("values", 0) +
                 " - $" + obj.find("#slider-range").slider("values", 1));
 
-            findTag(objItems);
+            //findTag(objItems);
             findCategory();
 
             obj.find('#test-btn').on("click", function() {
-
-                localStorage.setItem('myKey', 'значение');
-                var localValue = localStorage.getItem('myKey');
-                /*           findTag(objItems);
-                           findCategory();*/
-            });
-
-
-            /*   $(".modal-dialog").on("dialogopen", function(event, ui) {
-                console.log(event);
-                console.log(ui);
+                console.log("sd");
+                addToCart("190BF910-E678-1F34-FFD5-CF66ADB8500011");
 
             });
-*/
-
-
             callback();
         }
     }

@@ -78,6 +78,10 @@ div.form {
     text-align: center;
 }
 
+.modal-body1 {
+    text-align: center;
+}
+
 .modal_foto {
     max-height: 400px;
 }
@@ -116,4 +120,8 @@ table thead tr td {
 table div {
     width: 100px;
     word-wrap: break-word;
+}
+
+ul.vendors{
+    margin-bottom: 10px;
 }

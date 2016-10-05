@@ -12,38 +12,29 @@ var app = (function($, cont) {
 
     Backendless.initApp(APPLICATION_ID, SECRET_KEY, VERSION);
 
-
     var curUser = "";
 
+
+
     $(document).ready(function() {
-         // Backendless.UserService.logout(new Backendless.Async(app.userLoggedout, app.gotError));
         app.checkUser();
-        $("#main-registration").on("click", function() {
-            console.log("saf");
+        $("#modal-button-registration").on("click", function() {
+            var user = new Backendless.User();
+            user.email = regEmail.val();
+            user.password = regPass.val();
+            console.log(user);
+            Backendless.UserService.register(user, new Backendless.Async(app.userRegistration, app.gotError));
         });
 
-        // $("#main-login").on("click", function() {
-
-
         $("#modal-button-login").on("click", function() {
-            
             var login = loginEmail.val();
             var pass = loginPass.val();
             console.log(login + pass);
             Backendless.UserService.login(login, pass, true, new Backendless.Async(app.userLoggedIn, app.gotError));
         });
-        
-         $("#modal-button-registration").on("click", function() {
-                var user = new Backendless.User();
-                user.email = regEmail.val();
-                //   user.name = name;
-                user.password = regPass.val();
-                Backendless.UserService.register(user, new Backendless.Async(app.userRegistered, app.gotError));
-         });
-
 
         $('#main-logout').on("click", function() {
-            console.log("logout");
+            $('.box_for_tel1 div').remove();
             Backendless.UserService.logout(new Backendless.Async(app.userLoggedout, app.gotError));
 
         });
@@ -86,32 +77,35 @@ var app = (function($, cont) {
     }
 
     return {
-        
-          userRegistered:function(user) {
-               $(".modal-dialog .close").click();
-                var noticeReg = $("#notification");
-                noticeReg.append('<div class="alert alert-success fade in"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a><strong>Success! </strong>User ' + user.email + ' has been registered.</div>');
-                setTimeOutNotice(noticeReg);
-            },
-            
+
+        userRegistration: function(user) {
+            $(".modal-dialog .close").click();
+            var notice = $("#notification");
+            notice.append('<div class="alert alert-success fade in"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a><strong>Success! </strong>User ' + user.email + ' has been registered.</div>');
+            setTimeOutNotice(notice);
+        },
         userLoggedIn: function(user) {
             $(".modal-dialog .close").click();
             curUser = user.email;
             app.checkUser();
-            var noticeIn = $("#notification");
-            noticeIn.append('<div class="alert alert-success fade in"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a><strong>Success! </strong>User ' + user.email + ' has been login.</div>');
-            setTimeOutNotice(noticeIn);
+            var notice = $("#notification");
+            notice.append('<div class="alert alert-success fade in"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a><strong>Success! </strong>User ' + user.email + ' has been login.</div>');
+            setTimeOutNotice(notice);
         },
         checkUser: function() {
             curUser = Backendless.UserService.getCurrentUser();
             if (curUser != null) {
+                $('.addtocart').show();
+                $('a[href="#/registration"]').show();
                 $("#main-registration").hide();
                 $("#main-login").hide();
                 $('#main-logout').show();
-
                 $("#current-user").text("Добро пожаловать, " + curUser.email);
             }
             else {
+                //   ar linksToGoogle = $('a[href="http://google.com"]');
+                 $('.addtocart').hide();
+                $('a[href="#/registration"]').hide();
                 $("#main-registration").show();
                 $("#main-login").show();
                 $('#main-logout').hide();
@@ -119,6 +113,8 @@ var app = (function($, cont) {
             }
         },
         userLoggedout: function(user) {
+            
+            window.location = "#/";
             var notice = $("#notification");
             notice.append('<div class="alert alert-success fade in"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a><strong>Success! </strong>User ' + curUser.email + ' has been logout.</div>');
             /*  setTimeout(function() {
@@ -129,11 +125,15 @@ var app = (function($, cont) {
 
         },
         gotError: function(err) {
-            var noticeErr = $("#notification");
-            noticeErr.append(' <div class="alert alert-danger fade in"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a><strong>Error! </strong>' + err.message + '.</div>');
-            setTimeOutNotice(noticeErr);
+            var notice = $("#notification");
+            notice.append(' <div class="alert alert-danger fade in"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a><strong>Error! </strong>' + err.message + '.</div>');
+            /*   setTimeout(function() {
+                   notice.children().fadeOut("slow");
+               }, 3000);*/
+            setTimeOutNotice(notice);
         },
         init: function() {
+
             $(cont.data('pages')).find('li>a').each(function() {
                 var href = $(this).attr("href");
 
@@ -176,7 +176,10 @@ var app = (function($, cont) {
         debug: function() {
             console.log(pages);
         }
+
+
     }
+
 
 })(jQuery, $('#app'));
 
