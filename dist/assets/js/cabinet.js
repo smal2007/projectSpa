@@ -65,10 +65,10 @@ app.currentModule = (function($) {
         $(".table thead td").remove();
         var sum = 0;
         $.each(data, function(i) {
-          
+            console.log(data);
             var items = findItems(data[i].itemId);
-              console.log(items);
-           sum += items.data[0].price * data[i].count;
+            // console.log(items);
+            sum += items.data[0].price * data[i].count;
             $(".table thead").append("<tr><td>" + data[i].objectId + "</td><td>" + items.data[0].title + "</td><td>" + items.data[0].price + "</td><td><input class='count-input' type='text' value=" + data[i].count + "></td><td class='next-input total-count'>" + items.data[0].price * data[i].count + "</td></tr>");
         });
         $("#total-cart-summa").text(sum);
@@ -86,7 +86,6 @@ app.currentModule = (function($) {
             });
 
             $("#total-cart-summa").text(count);
-
         });
 
         $('.count-input').on('keydown', function(event) {
@@ -118,9 +117,9 @@ app.currentModule = (function($) {
         for (var i = 0; i < dataPhones.length; i++) {
             $('.box_for_tel1').append('<div class="tel col-sm-4 col-md-3" data-count="' + i + '">');
             var tel = $('.tel')[i];
-            $(tel).append('<div class=" tel_thumbnail thumbnail" data-toggle="modal" data-target="#myModal">');
+            $(tel).append('<div class=" tel_thumbnail thumbnail">');
             var tel_thumbnail = $('.tel_thumbnail')[i];
-            $(tel_thumbnail).append("<img class='foto' src='" + dataPhones[i].image + "'>");
+            $(tel_thumbnail).append("<img class='foto' data-toggle='modal' data-target='#myModal' src='" + dataPhones[i].image + "'>");
             $(tel_thumbnail).append('<h3>' + dataPhones[i].title + '</h3>');
             $(tel_thumbnail).append('<h3>' + dataPhones[i].price + ' $</h3>');
 
@@ -143,8 +142,8 @@ app.currentModule = (function($) {
         var callback = new Backendless.Async(handleResponseHistory, handleFault);
         obj = obj || new Object();
         obj.pageSize = obj.pageSize || 20;
-        obj.objectId =  obj.objectId || "";
-        console.log( obj.objectId );
+        obj.objectId = obj.objectId || "";
+        console.log(obj.objectId);
         obj.nameItems = "objectId";
 
         var arrayOfTitleItems = "";
@@ -193,10 +192,6 @@ app.currentModule = (function($) {
 
             obj.find('#refresh-table1').on("click", function() {
                 $('.box_for_tel1 div').remove();
-                var object = {};
-                var str = localStorage.getItem(Backendless.UserService.getCurrentUser().email);
-                object.objectId = str.split(",");
-                findHistory(object);
             });
 
             callback();

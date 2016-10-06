@@ -13,32 +13,33 @@ var app = (function($, cont) {
     Backendless.initApp(APPLICATION_ID, SECRET_KEY, VERSION);
 
     var curUser = "";
+    $("#modal-button-registration").on("click", function() {
+        var user = new Backendless.User();
+        user.email = regEmail.val();
+        user.password = regPass.val();
+        console.log(user);
+        Backendless.UserService.register(user, new Backendless.Async(app.userRegistration, app.gotError));
+    });
 
+    $("#modal-button-login").on("click", function() {
+        var login = loginEmail.val();
+        var pass = loginPass.val();
+        console.log(login + pass);
+        Backendless.UserService.login(login, pass, true, new Backendless.Async(app.userLoggedIn, app.gotError));
+    });
+
+    $('#main-logout').on("click", function() {
+        $('.box_for_tel1 div').remove();
+          Backendless.UserService.logout(new Backendless.Async(app.userLoggedout, app.gotError));
+        //Backendless.UserService.logout();
+
+    });
 
 
     $(document).ready(function() {
-          Backendless.UserService.logout(new Backendless.Async(app.userLoggedout, app.gotError));
+        // Backendless.UserService.logout(new Backendless.Async(app.userLoggedout, app.gotError));
         app.checkUser();
-        $("#modal-button-registration").on("click", function() {
-            var user = new Backendless.User();
-            user.email = regEmail.val();
-            user.password = regPass.val();
-            console.log(user);
-            Backendless.UserService.register(user, new Backendless.Async(app.userRegistration, app.gotError));
-        });
 
-        $("#modal-button-login").on("click", function() {
-            var login = loginEmail.val();
-            var pass = loginPass.val();
-            console.log(login + pass);
-            Backendless.UserService.login(login, pass, true, new Backendless.Async(app.userLoggedIn, app.gotError));
-        });
-
-        $('#main-logout').on("click", function() {
-            $('.box_for_tel1 div').remove();
-            Backendless.UserService.logout(new Backendless.Async(app.userLoggedout, app.gotError));
-
-        });
     });
 
     function setTimeOutNotice(obj) {
@@ -105,7 +106,7 @@ var app = (function($, cont) {
             }
             else {
                 //   ar linksToGoogle = $('a[href="http://google.com"]');
-                 $('.addtocart').hide();
+                $('.addtocart').hide();
                 $('a[href="#/registration"]').hide();
                 $("#main-registration").show();
                 $("#main-login").show();
@@ -114,13 +115,11 @@ var app = (function($, cont) {
             }
         },
         userLoggedout: function(user) {
-            
+
             window.location = "#/";
             var notice = $("#notification");
             notice.append('<div class="alert alert-success fade in"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a><strong>Success! </strong>User ' + curUser.email + ' has been logout.</div>');
-            /*  setTimeout(function() {
-                  notice.children().fadeOut("slow");
-              }, 3000);*/
+
             setTimeOutNotice(notice);
             app.checkUser();
 
@@ -128,9 +127,7 @@ var app = (function($, cont) {
         gotError: function(err) {
             var notice = $("#notification");
             notice.append(' <div class="alert alert-danger fade in"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a><strong>Error! </strong>' + err.message + '.</div>');
-            /*   setTimeout(function() {
-                   notice.children().fadeOut("slow");
-               }, 3000);*/
+
             setTimeOutNotice(notice);
         },
         init: function() {

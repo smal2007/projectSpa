@@ -2,7 +2,39 @@ app.currentModule = (function($) {
     var objItems = {};
     var currentCategoryId = "";
     var tagsMobile = {};
+    var objSearch = {};
 
+
+
+
+
+    function seachItems(obj) {
+        var callback = new Backendless.Async(handleResponseTag, handleFault);
+        obj = obj || new Object();
+        obj.pageSize = obj.pageSize || 6;
+        obj.title = obj.title || "";
+        var itemsStorage = Backendless.Persistence.of('items');
+        var dataQuery = {
+            options: {
+                pageSize: obj.pageSize
+            },
+            condition: "title LIKE '%" + obj.title + "%'",
+        };
+        itemsStorage.find(dataQuery, callback);
+    }
+
+
+    $(window).on('hashchange', function(e) {
+        $(document).ready(function() {
+
+            findTag(objItems);
+
+        });
+    }).trigger('hashchange');
+
+    $(".pagination").on("pagechange", function(event) {
+        console.log("click");
+    });
 
 
     $(function() {
@@ -16,11 +48,6 @@ app.currentModule = (function($) {
             $('.addtocart').hide();
         }
     });
-
-    $(document).ready(function() {
-        // Handler for .ready() called.
-    });
-
 
     $(function() {
         $("#slider-range").slider({
@@ -42,21 +69,17 @@ app.currentModule = (function($) {
     });
 
     $(document).ready(function() {
-        //  findTag(objItems);
         findVendors(objItems);
     });
 
 
     function addToCart(objectId1) {
-        //   var callback = new Backendless.Async(handleResponseTag, handleFault);
+        console.log('added');
         var dataStore = Backendless.Persistence.of('cart');
-
-        //console.log(Backendless.UserService.getCurrentUser().objectId);
         var cond = "itemId='" + objectId1 + "'";
         console.log(cond);
         var dataQuery = {
             condition: cond,
-            //  condition: "ownerId='"+ Backendless.UserService.getCurrentUser().objectId +"'",
         }
         var myContact = dataStore.find(dataQuery);
         console.log(myContact.data.length);
@@ -69,21 +92,16 @@ app.currentModule = (function($) {
                 count: count + 1,
                 itemId: objectId1,
                 objectId: myContact.data[0].objectId,
-
-                //    ownerId: Backendless.UserService.getCurrentUser().objectId,
             });
             dataStore.save(commentObject1);
         }
         else {
-            console.log('ss');
             var commentObject2 = new Cart2({
                 count: 1,
                 itemId: objectId1,
-                // objectId: objectId1,
                 ownerId: Backendless.UserService.getCurrentUser().objectId
             });
             Backendless.Persistence.of('cart').save(commentObject2);
-            // dataStore.save(commentObject);
         }
 
         function Cart1(args) {
@@ -91,14 +109,12 @@ app.currentModule = (function($) {
             this.count = args.count || "";
             this.itemId = args.itemId || "";
             this.objectId = args.objectId || "";
-            //    this.ownerId = args.ownerId || "";
         }
 
         function Cart2(args) {
             args = args || {};
             this.count = args.count || "";
             this.itemId = args.itemId || "";
-            //    this.ownerId = args.ownerId || "";
         }
     }
 
@@ -118,7 +134,9 @@ app.currentModule = (function($) {
         for (var i = 0; i < uniqueArray.length; i++) {
             var li = $('<li class="vendor"><label> <input name="vendors" type="checkbox"> ' + uniqueArray[i] + ' </label> </li>');
             $('.vendors').append(li);
-             $(li).find('input[type="checkbox"]').checkboxradio({icon:false})
+            $(li).find('input[type="checkbox"]').checkboxradio({
+                icon: false
+            })
         }
 
         $('.vendors li label input[type="checkbox"]').change(function() {
@@ -164,12 +182,18 @@ app.currentModule = (function($) {
         for (var i = 0; i < tags.length; i++) {
             $('.box_for_tel').append('<div data-category_id="' + tags[i].objectId + '" class="tel col-xs-6 col-sm-6 col-md-4 col-lg-3" data-count="' + i + '">');
             var tel = $('.tel')[i];
-            $(tel).append('<div class=" tel_thumbnail thumbnail" data-toggle="modal" data-target="#myModal">');
+            $(tel).append('<div class=" tel_thumbnail thumbnail">');
             var tel_thumbnail = $('.tel_thumbnail')[i];
-            $(tel_thumbnail).append("<img class='foto' src='" + tags[i].image + "'>");
+            $(tel_thumbnail).append("<img class='foto' data-toggle='modal' data-target='#myModal' src='" + tags[i].image + "'>");
             $(tel_thumbnail).append('<h4>' + tags[i].title + '</h4>');
+            $(tel_thumbnail).append('<input data-category_id="' + tags[i].objectId + '" class="addtocart btn btn-info" type="button" value="Добавить в корзину">').on("click", function() {
+                console.log('object' + tags[i].objectId);
+                addToCart(tags[i].objectId);
+            });
+
+
+
             $(tel_thumbnail).append('<h3>' + tags[i].price + ' $</h3>');
-            $(tel_thumbnail).append('<input data-category_id="' + tags[i].objectId + '" class="addtocart btn btn-info" type="button" value="Добавить в корзину">');
 
             $(tel).on('click', function() {
                 var currentDataTel = tags[$(this).data('count')];
@@ -178,41 +202,16 @@ app.currentModule = (function($) {
                 $('.modal-body1').html('<img class="modal_foto" src="' + currentDataTel.image + '">');
                 $('.modal-body1').append('<p>' + currentDataTel.fullDescription + '</p>');
 
-                var curUser = Backendless.UserService.getCurrentUser();
-                if (curUser != null) {
-                    localStorage.setItem(curUser.email, localStorage.getItem(curUser.email) + "," + $(this).attr("data-category_id"));
-                    // localStorage.setItem(curUser.email, $(this).attr("data-category_id"));
-                }
 
             });
-
-            $(function() {
-                var curUser = "";
-                console.log(curUser);
-                curUser = Backendless.UserService.getCurrentUser();
-                if (curUser != null) {
-                    $('.addtocart').show();
-                }
-                else {
-                    $('.addtocart').hide();
-                }
-            });
-
         }
-        $(".addtocart").on("click", function() {
-            console.log($(this).attr('data-category_id'));
-            addToCart($(this).attr('data-category_id'));
-            //   $("#myModal").fadeOut();
-        })
     }
 
     function initPaginator(count) {
         var $pag = $('.pagination');
         $pag.find("li").remove();
-        //  $pag.append('<li class="disabled"><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>');
         for (var i = 0; i < count; i++) {
             $pag.append('<li class="active"><a href="#/">' + (i + 1) + '<span class="sr-only">(current)</span></a></li>');
-            //   li.onclick = myfun(i);
         }
 
         $('.pagination li a').each(function(i) {
@@ -224,6 +223,7 @@ app.currentModule = (function($) {
     }
 
     function handleResponseTag(tag) {
+        console.log(tag);
         tagsMobile = tag.data;
         var count = tag.totalObjects / 8;
         initPaginator(count);
@@ -232,13 +232,15 @@ app.currentModule = (function($) {
         for (var i = 0; i < 8; i++) {
             $('.box_for_tel').append('<div data-category_id="' + tags[i].objectId + '" class="tel col-xs-6 col-sm-6 col-md-4 col-lg-3" data-count="' + i + '">');
             var tel = $('.tel')[i];
-            $(tel).append('<div class=" tel_thumbnail thumbnail" data-toggle="modal" data-target="#myModal">');
+            $(tel).append('<div class=" tel_thumbnail thumbnail">');
             var tel_thumbnail = $('.tel_thumbnail')[i];
-            $(tel_thumbnail).append("<img class='foto pulse' src='" + tags[i].image + "'>");
+            $(tel_thumbnail).append("<img class='foto pulse' data-toggle='modal' data-target='#myModal' src='" + tags[i].image + "'>");
             $(tel_thumbnail).append('<h4>' + tags[i].title + '</h4>');
             $(tel_thumbnail).append('<h3>' + tags[i].price + ' $</h3>');
- /*$(tel_thumbnail).append('<button class="basket_btn btn btn-primary"> в корзину </button>');*/
-            $(tel_thumbnail).append('<input data-category_id="' + tags[i].objectId + '" class="addtocart btn btn-info" type="button" value="Добавить в корзину">');
+            $(tel_thumbnail).append('<input data-category_id="' + tags[i].objectId + '" class="addtocart btn btn-info" type="button" value="Добавить в корзину">').on("click", function() {
+                console.log('object' + tags[i].objectId);
+                addToCart(tags[i].objectId);
+            });
 
 
             $(tel).on('click', function() {
@@ -246,30 +248,20 @@ app.currentModule = (function($) {
                 $('#myModalLabel').html(currentDataTel.title);
                 $('.modal-body1').html('<img class="modal_foto" src="' + currentDataTel.image + '">');
                 $('.modal-body1').append('<p>' + currentDataTel.fullDescription + '</p>');
-
-
-                var curUser = Backendless.UserService.getCurrentUser();
-                if (curUser != null) {
-                    localStorage.setItem(curUser.email, localStorage.getItem(curUser.email) + "," + $(this).attr("data-category_id"));
-                    // localStorage.setItem(curUser.email, $(this).attr("data-category_id"));
-                }
             });
-            $(function() {
-                var curUser = "";
-                console.log(curUser);
-                curUser = Backendless.UserService.getCurrentUser();
-                if (curUser != null) {
-                    $('.addtocart').show();
-                }
-                else {
-                    $('.addtocart').hide();
-                }
-            });
+
         }
-        $(".addtocart").on("click", function() {
-            addToCart($(this).attr('data-category_id'));
-        })
-
+        $(function() {
+            var curUser = "";
+            console.log(curUser);
+            curUser = Backendless.UserService.getCurrentUser();
+            if (curUser != null) {
+                $('.addtocart').show();
+            }
+            else {
+                $('.addtocart').hide();
+            }
+        });
     }
 
     function findTag(obj) {
@@ -297,7 +289,6 @@ app.currentModule = (function($) {
 
         var itemsStorage = Backendless.Persistence.of('items');
         var dataQuery = {
-            //properties: ["name", "objectId"],
             options: {
                 sortBy: (obj.sortBy + " " + obj.order),
                 pageSize: obj.pageSize
@@ -331,7 +322,6 @@ app.currentModule = (function($) {
             objItems.nameItems = "";
             var $th = $(this);
             var currentCategory = ($(this).text());
-            //$('ul.vendors').text(currentCategory);
             currentCategoryId = $th.attr("data-category_id");
             objItems.titleItems = [currentCategoryId];
             findTag(objItems);
@@ -361,6 +351,19 @@ app.currentModule = (function($) {
             callback = callback || function() {
                 return false;
             }
+            var $search = obj.find('.form-control');
+            obj.find("#search-button").on("click", function() {
+                objSearch.title = $search.val();
+                seachItems(objSearch);
+            });
+
+            $search.on('keydown', function(event) {
+                if (event.keyCode == 13) {
+                    objSearch.title = $search.val();
+                    seachItems(objSearch);
+                }
+            });
+
 
             obj.find("#slider-range").slider({
                 range: true,
@@ -380,14 +383,11 @@ app.currentModule = (function($) {
             obj.find("#amount").val("$" + obj.find("#slider-range").slider("values", 0) +
                 " - $" + obj.find("#slider-range").slider("values", 1));
 
-            //findTag(objItems);
             findCategory();
 
-            obj.find('#test-btn').on("click", function() {
-                console.log("sd");
-                addToCart("190BF910-E678-1F34-FFD5-CF66ADB8500011");
 
-            });
+
+
             callback();
         }
     }
